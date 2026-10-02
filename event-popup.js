@@ -18,7 +18,7 @@ var EV_DB_CONFIG = {
     var msgInput = document.getElementById('evMessage');
     var nameError = document.getElementById('evNameError');
 
-    var CD_TARGET = new Date('2026-11-20T18:00:00+03:30').getTime(); // 1405/08/29 ساعت ۱۸
+    var CD_TARGET = new Date('2026-10-27T18:00:00+03:30').getTime(); // 1405/08/05 ساعت ۱۸
 
     // اعداد فارسی
     function faNum(n) {
