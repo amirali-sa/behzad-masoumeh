@@ -479,20 +479,13 @@ var woocommerce_params = {"ajax_url":"/wp-admin/admin-ajax.php","wc_ajax_url":"/
 
 
 </style>
-	<!-- ================= همیشه از بالای صفحه شروع کن =================
+	<!-- ================= شروع همیشه از بالای صفحه =================
      اسکریپت اجرایی و فوری (مستقل از اسکریپت‌های type="text/plain" که وردپرس با تأخیر اجرا می‌کند):
-     تا وقتی لایه پاکت (#introOverlay) باز است، صفحه در بالا نگه داشته می‌شود و
-     بازیابی اسکرول قبلی مرورگر غیرفعال می‌گردد. -->
+     بازیابی اسکرول قبلی مرورگر غیرفعال می‌شود و صفحه یک‌بار روی بالا فیکس می‌شود.
+     فقط همین ریست تک‌باره انجام می‌شود؛ بعد از باز شدن پاکت هیچ چیزی اسکرول کاربر را دستکاری نمی‌کند. -->
 <script>
 (function () {
     if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
-
-    /* آیا لایه پاکت هنوز باز است؟ */
-    function introIsOpen() {
-        var o = document.getElementById('introOverlay');
-        if (!o || o.classList.contains('fade-out')) return false;
-        return o.getBoundingClientRect().height > 0;
-    }
 
     /* ریست آنی اسکرول به بالا (scroll-behavior:smooth را موقتاً دور می‌زند) */
     window.__resetScrollTop = function () {
@@ -507,25 +500,7 @@ var woocommerce_params = {"ajax_url":"/wp-admin/admin-ajax.php","wc_ajax_url":"/
 
     window.__resetScrollTop();
 
-    /* تا وقتی پاکت باز است، هر اسکرولی به بالا برگردانده می‌شود */
-    window.addEventListener('scroll', function () {
-        if (window.pageYOffset !== 0 && introIsOpen()) { window.__resetScrollTop(); }
-    }, { passive: true });
-
-    window.addEventListener('pageshow', function () {
-        if (introIsOpen()) { window.__resetScrollTop(); }
-    }, { passive: true });
-
-    /* ضدِ بازیابی اسکرول مرورگر: تا وقتی پاکت باز است و تا ۲.۵ ثانیه بعد از بسته شدن آن،
-       صفحه در بالا نگه داشته می‌شود تا محتوا همیشه از بالای صفحه شروع شود */
-    var closedAt = 0, ticks = 0;
-    var guard = setInterval(function () {
-        var open = introIsOpen();
-        if (open) { closedAt = 0; }
-        else if (!closedAt) { closedAt = Date.now(); }
-        if (ticks++ > 90 || (!open && (Date.now() - closedAt) > 2500)) { clearInterval(guard); return; }
-        if (window.pageYOffset !== 0) { window.__resetScrollTop(); }
-    }, 100);
+    window.addEventListener('pageshow', function () { window.__resetScrollTop(); }, { passive: true });
 })();
 </script>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" /></head>
@@ -1385,13 +1360,6 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
             if (introOverlay.parentNode) introOverlay.remove();
         }, 800);
-
-        // ضدِ بازیابی اسکرول مرورگر: تا پایان باز شدن پاکت، صفحه در بالا نگه داشته می‌شود
-        [200, 600, 800].forEach(function (ms) {
-            setTimeout(function () {
-                if (window.pageYOffset !== 0 && window.__resetScrollTop) window.__resetScrollTop();
-            }, ms);
-        });
     }
 
     video.addEventListener('ended', endIntro);
